@@ -1,0 +1,27 @@
+def chatbot():
+    print("Chatbot: Hello! I'm your friendly chatbot. Type something or 'bye' to exit.")
+
+    while True:
+        user_input = input("You: ").strip().capitalize()
+        if user_input in ["Hi", "Hello", "Hi bot", "Hello bot", "Hello chatbot", "Hi chatbot"]:
+            print("Chatbot: Hey Buddy ! ")
+        elif user_input in ["How are you", "How are you bot", "How are you chatbot"]:
+            print("Chatbot: I'm fine , thanks for asking! How about you Buddy ?")
+        elif user_input in ["I am fine","I'm fine","I am fine Buddy","I'm fine Buddy"]:
+            print("Chatbot: That's nice my Friend")
+        elif user_input in ["Ok","Okay","Okie","Ok Buddy","Ok buddy","Okie Buddy","Okie buddy","Okay Buddy","Okay buddy"]:
+            print("Chatbot: Do you need any other info ? Ask me Buddy !")
+        elif user_input in ["What are you doing", "What's up", "What up", "Wassup"]:
+            print("Chatbot: Just chatting with you Friend!")
+        elif user_input in ["What is your name", "Who are you", "Your name", "Tell me your name"]:
+            print("Chatbot: I'm CodeAlpha Bot forever your companion !")
+        elif user_input in ["Who created you", "Who is your creator", "Who made you", "Your developer","Who built you", "Who's your maker" ]:
+            print("Chatbot: I was created by Sathiyamukesh a Python Developer !")
+        elif user_input in ["Thank you", "Thanks", "Thank you Buddy", "Thanks a lot", "Thanks chatbot"]:
+            print("Chatbot: You're welcome Buddy !  Always here to help.")
+        elif user_input in ["Bye", "Goodbye", "See you", "Exit", "Quit", "See ya", "Talk to you later"]:
+            print("Chatbot: Goodbye! Have a great day Buddy!")
+            break
+        else:
+            print("Chatbot: Sorry , I didn't understand that. Can you rephrase?")
+chatbot()
