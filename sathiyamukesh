@@ -1,0 +1,153 @@
+import random
+word_bank = {"random": "Not in a particular order",
+             "python": "A popular programming language",
+             "simple": "Opposite of complicated",
+             "guess": "To try without being sure",
+             "loops": "Used to repeat code in programming"}
+hangman_stages = [
+    """
+     -----
+     |   |
+         |
+         |
+         |
+        ---
+    """,
+    """
+     -----
+     |   |
+     O   |
+         |
+         |
+        ---
+    """,
+    """
+     -----
+     |   |
+     O   |
+     |   |
+         |
+        ---
+    """,
+    """
+     -----
+     |   |
+     O   |
+    /|   |
+         |
+        ---
+    """,
+    """
+     -----
+     |   |
+     O   |
+    /|\\  |
+         |
+        ---
+    """,
+    """
+     -----
+     |   |
+     O   |
+    /|\\  |
+    /    |
+        ---
+    """,
+    """
+     -----
+     |   |
+     O   |
+    /|\\  |
+    / \\  |
+        ---
+    """
+]
+
+# Main Hangman game function
+def play_hangman(secret_word, hint):
+    guessed_letters = []
+    incorrect_guesses = 0
+    max_incorrect = 6
+    display_word = ["_" for _ in secret_word]
+
+    print("\nWelcome to Hangman!")
+    print(f"Hint: {hint}")
+
+    while incorrect_guesses < max_incorrect and "_" in display_word:
+        print(hangman_stages[incorrect_guesses])
+        print("Word: " + " ".join(display_word))
+        print(f"Guessed Letters: {', '.join(guessed_letters)}")
+        print(f"Attempts Left: {max_incorrect - incorrect_guesses}")
+
+        guess = input("Guess a letter: ").lower()
+
+        if not guess.isalpha() or len(guess) != 1:
+            print(" Please enter a single alphabet letter.\n")
+            continue
+        if guess in guessed_letters:
+            print("️ You already guessed that letter.\n")
+            continue
+
+        guessed_letters.append(guess)
+
+        if guess in secret_word:
+            for i, letter in enumerate(secret_word):
+                if letter == guess:
+                    display_word[i] = guess
+            print("Good guess!\n")
+        else:
+            incorrect_guesses += 1
+            print(" Incorrect guess.\n")
+
+    print(hangman_stages[incorrect_guesses])
+    if "_" not in display_word:
+        print(f" Congratulations! You guessed the word: {secret_word}")
+        return True
+    else:
+        print(f" Out of attempts! The word was: {secret_word}")
+        return False
+
+# Multiplayer mode (player inputs a word)
+def multiplayer_mode():
+    print("\nMultiplayer Mode: Player 1, please enter a secret word.")
+    while True:
+        word = input("Enter word (only letters, no spaces): ").lower()
+        if word.isalpha():
+            break
+        else:
+            print("Please enter a valid word.")
+    hint = input("Enter a hint for this word: ")
+    print("\n" * 50)  # Clears screen (simulated)
+    return word, hint
+
+# Main driver
+def main():
+    wins = 0
+    losses = 0
+
+    print("==== Welcome to Hangman Game ====")
+
+    while True:
+        mode = input("\nChoose mode: [1] Single Player [2] Multiplayer [Q] Quit: ").lower()
+        if mode == '1':
+            secret_word = random.choice(list(word_bank.keys()))
+            hint = word_bank[secret_word]
+        elif mode == '2':
+            secret_word, hint = multiplayer_mode()
+        elif mode == 'q':
+            print(f"\nFinal Score: {wins} Wins | {losses} Losses")
+            print("Thanks for playing Hangman! Goodbye.")
+            break
+        else:
+            print(" Invalid option. Try again.")
+            continue
+
+        result = play_hangman(secret_word, hint)
+        if result:
+            wins += 1
+        else:
+            losses += 1
+        print(f"Current Score:  Wins = {wins} |  Losses = {losses}")
+
+if __name__ == "__main__":
+    main()
