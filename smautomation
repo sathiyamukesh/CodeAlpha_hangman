@@ -1,0 +1,57 @@
+import os
+import shutil
+import re
+import requests
+
+def move_jpg_files(src_dir, dst_dir, log):
+    os.makedirs(dst_dir, exist_ok=True)
+    for fname in os.listdir(src_dir):
+        if fname.lower().endswith('.jpg'):
+            src = os.path.join(src_dir, fname)
+            dst = os.path.join(dst_dir, fname)
+            try:
+                shutil.move(src, dst)
+                log.append(f"Moved image: {fname}")
+            except Exception as e:
+                log.append(f"Error moving {fname}: {e}")
+def extract_emails_from_txt(txt_path, output_path, log):
+    if not os.path.isfile(txt_path):
+        log.append(f"No such file: {txt_path}")
+        return
+    with open(txt_path, 'r', encoding='utf‑8', errors='ignore') as f:
+        text = f.read()
+    pattern = r"[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"
+    emails = sorted(set(re.findall(pattern, text)))
+    with open(output_path, 'w', encoding='utf‑8') as out:
+        for e in emails:
+            out.write(e + "\n")
+    log.append(f"Extracted {len(emails)} emails to {output_path}")
+def scrape_and_save_title(url, output_path, log):
+    try:
+        resp = requests.get(url, timeout=10)
+        resp.raise_for_status()
+        m = re.search(r'<title>(.*?)</title>', resp.text, re.IGNORECASE | re.DOTALL)
+        title = m.group(1).strip() if m else "NO TITLE FOUND"
+        with open(output_path, 'w', encoding='utf‑8') as f:
+            f.write(f"URL: {url}\nTitle: {title}\n")
+        log.append(f"Scraped title: {title!r}, saved to {output_path}")
+    except Exception as e:
+        log.append(f"Error scraping {url}: {e}")
+def main():
+    log = []
+    print("Task Automation Script")
+    src = input("Source folder for .jpg files: ").strip()
+    dst = input("Destination folder: ").strip()
+    move_jpg_files(src, dst, log)
+    txtfile = input("Path to .txt file to scan for emails: ").strip()
+    email_out = input("Path to save extracted emails (e.g. emails.txt): ").strip()
+    extract_emails_from_txt(txtfile, email_out, log)
+    url = input("Webpage URL to scrape title from: ").strip()
+    title_out = input("Path to save title (e.g. title.txt): ").strip()
+    scrape_and_save_title(url, title_out, log)
+    print("\nSummary:")
+    for entry in log:
+        print(" -", entry)
+
+if __name__ == "__main__":
+    main()
