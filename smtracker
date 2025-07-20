@@ -1,0 +1,50 @@
+def main():
+    stock_prices = {"AAPL": 180.0,"TSLA": 250.0,"GOOG": 125.0,"MSFT": 300.0 }
+    print("Welcome to the Stock Portfolio Tracker!")
+    print("Available stock tickers:", ", ".join(stock_prices.keys()))
+    print("Enter your portfolio. Leave ticker blank to finish.\n")
+    portfolio = {}
+    while True:
+        ticker = input("Enter stock ticker (e.g. AAPL): ").strip().upper()
+        if not ticker:
+            break
+        if ticker not in stock_prices:
+            print(f"{ticker!r} not in price list. Try again.")
+            continue
+        try:
+            qty = int(input(f"Enter quantity of {ticker}: ").strip())
+        except ValueError:
+            print("Quantity must be an integer. Try again.")
+            continue
+
+        portfolio[ticker] = portfolio.get(ticker, 0) + qty
+        print(f"  --> Added {qty} shares of {ticker}. Current quantity: {portfolio[ticker]}\n")
+    total_value = 0.0
+    print("\nPortfolio Summary:")
+    print("{:<8} {:>10} {:>15} {:>15}".format("Ticker", "Quantity", "Price/share", "Value"))
+    print("-" * 50)
+    for ticker, qty in portfolio.items():
+        price = stock_prices[ticker]
+        value = qty * price
+        total_value += value
+        print(f"{ticker:<8} {qty:>10} {price:>15.2f} {value:>15.2f}")
+    print("-" * 50)
+    print(f"{'Total Investment Value':<33} {total_value:>15.2f}")
+    save = input("\nSave result to file? (y/n): ").strip().lower()
+    if save == "y":
+        fname = input("Enter filename (e.g. portfolio.csv or .txt): ").strip()
+        try:
+            delimiter = "," if fname.lower().endswith(".csv") else "\t"
+            with open(fname, "w") as f:
+                f.write(f"Ticker{delimiter}Quantity{delimiter}Price{delimiter}Value\n")
+                for ticker, qty in portfolio.items():
+                    price = stock_prices[ticker]
+                    value = qty * price
+                    f.write(f"{ticker}{delimiter}{qty}{delimiter}{price:.2f}{delimiter}{value:.2f}\n")
+                f.write(f"Total{delimiter}{''}{delimiter}{''}{delimiter}{total_value:.2f}\n")
+            print(f"Saved portfolio to {fname}")
+        except Exception as e:
+            print("Error saving file:", e)
+
+if __name__ == "__main__":
+    main()
